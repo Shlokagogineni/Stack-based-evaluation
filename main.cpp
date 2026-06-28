@@ -1,5 +1,8 @@
 #include <iostream>
+#include <cctype>
 #include "stack.h"
+#include "infix_to_postfix.h"
+
 using namespace std;
 
 int evaluatePostfix(string exp) {
@@ -26,12 +29,58 @@ int evaluatePostfix(string exp) {
     return s.pop();
 }
 
-int main() {
+bool isInfix(string exp)
+{
+    for(int i = 0; i < exp.length(); i++)
+    {
+        if(exp[i] == '(' || exp[i] == ')')
+            return true;
+
+        if(isalpha(exp[i]))
+            return true;
+
+        if(i > 0 && isdigit(exp[i]) &&
+           (exp[i-1] == '+' || exp[i-1] == '-' ||
+            exp[i-1] == '*' || exp[i-1] == '/'))
+            return true;
+    }
+
+    return false;
+}
+
+bool hasVariables(string exp)
+{
+    for(char c : exp)
+    {
+        if(isalpha(c))
+            return true;
+    }
+
+    return false;
+}
+
+int main()
+{
     string exp;
-    cout << "Enter postfix expression: ";
+
+    cout << "Enter expression: ";
     cin >> exp;
 
-    cout << "Result = " << evaluatePostfix(exp);
+    if(isInfix(exp))
+    {
+        string postfix = infixToPostfix(exp);
+
+        cout << "Postfix Expression = " << postfix << endl;
+
+        if(!hasVariables(postfix))
+        {
+            cout << "Result = " << evaluatePostfix(postfix) << endl;
+        }
+    }
+    else
+    {
+        cout << "Result = " << evaluatePostfix(exp) << endl;
+    }
 
     return 0;
 }
