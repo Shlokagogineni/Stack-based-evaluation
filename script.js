@@ -102,18 +102,12 @@ function convertToPostfix() {
 
     const postfix = infixToPostfix(expr);
 
+    // Put the postfix expression into the input box
+    document.getElementById("expression").value = postfix;
+
     document.getElementById("result").innerText =
         "Postfix Expression: " + postfix;
-
-    // Evaluate only if there are no variables
-    if (!/[A-Za-z]/.test(postfix)) {
-        const result = evaluatePostfix(postfix);
-
-        document.getElementById("result").innerText +=
-            "\nResult: " + result;
-    }
 }
-
 function evaluateOnly() {
 
     const expr = document.getElementById("expression").value;
