@@ -104,6 +104,14 @@ function convertToPostfix() {
 
     document.getElementById("result").innerText =
         "Postfix Expression: " + postfix;
+
+    // Evaluate only if there are no variables
+    if (!/[A-Za-z]/.test(postfix)) {
+        const result = evaluatePostfix(postfix);
+
+        document.getElementById("result").innerText +=
+            "\nResult: " + result;
+    }
 }
 
 function evaluateOnly() {
