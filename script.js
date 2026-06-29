@@ -6,7 +6,6 @@ function precedence(op) {
 }
 
 function infixToPostfix(expr) {
-
     let stack = [];
     let postfix = "";
 
@@ -36,7 +35,13 @@ function infixToPostfix(expr) {
 
             while (
                 stack.length &&
-                precedence(stack[stack.length - 1]) >= precedence(ch)
+                (
+                    precedence(stack[stack.length - 1]) > precedence(ch) ||
+                    (
+                        precedence(stack[stack.length - 1]) === precedence(ch) &&
+                        ch !== '^'
+                    )
+                )
             ) {
                 postfix += stack.pop();
             }
@@ -58,11 +63,18 @@ function evaluatePostfix(expr) {
 
     for (let ch of expr) {
 
-        if (!isNaN(ch) && ch !== " ") {
+        if (ch === " ")
+            continue;
+
+        if (!isNaN(ch)) {
             stack.push(Number(ch));
         }
 
         else {
+
+            if (stack.length < 2) {
+                return "Invalid Postfix Expression";
+            }
 
             let b = stack.pop();
             let a = stack.pop();
@@ -84,37 +96,33 @@ function evaluatePostfix(expr) {
                 case '/':
                     stack.push(a / b);
                     break;
+
+                case '^':
+                    stack.push(a ** b); // or Math.pow(a, b)
+                    break;
+
+                default:
+                    return "Invalid Operator";
             }
         }
     }
+
+    if (stack.length !== 1)
+        return "Invalid Postfix Expression";
 
     return stack.pop();
 }
 
 function processExpression() {
 
-    const expr = document.getElementById("expression").value;
+    const expr = document.getElementById("expression").value.trim();
 
-    let isInfix = false;
-
-    for (let i = 0; i < expr.length; i++) {
-
-        if (
-            expr[i] === '(' ||
-            expr[i] === ')' ||
-            /[A-Za-z]/.test(expr[i]) ||
-            (i > 0 &&
-                !isNaN(expr[i]) &&
-                ['+','-','*','/'].includes(expr[i - 1]))
-        ) {
-            isInfix = true;
-            break;
-        }
-    }
+    // If expression contains parentheses, treat it as infix.
+    const isInfix = expr.includes("(") || expr.includes(")");
 
     if (isInfix) {
 
-        let postfix = infixToPostfix(expr);
+        const postfix = infixToPostfix(expr);
 
         if (/[A-Za-z]/.test(postfix)) {
 
@@ -123,7 +131,7 @@ function processExpression() {
 
         } else {
 
-            let result = evaluatePostfix(postfix);
+            const result = evaluatePostfix(postfix);
 
             document.getElementById("result").innerText =
                 "Postfix Expression: " + postfix +
@@ -132,9 +140,7 @@ function processExpression() {
 
     } else {
 
-        let result = evaluatePostfix(expr);
+        const result = evaluatePostfix(expr);
 
         document.getElementById("result").innerText =
-            "Result: " + result;
-    }
-}
+            "
