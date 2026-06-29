@@ -109,6 +109,7 @@ function convertToPostfix() {
         "Postfix Expression: " + postfix;
 }
 function evaluateOnly() {
+    console.log("Input:",expr);
 
     const expr = document.getElementById("expression").value;
 
