@@ -71,6 +71,7 @@ function evaluatePostfix(expr) {
     let stack = [];
 
     for (let ch of expr) {
+        console.log(ch);
 
         if (ch === " ")
             continue;
