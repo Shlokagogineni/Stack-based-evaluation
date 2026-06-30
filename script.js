@@ -1,6 +1,11 @@
 function precedence(op) {
-    if (op === '+' || op === '-') return 1;
-    if (op === '*' || op === '/') return 2;
+
+    if (op === '+' || op === '-')
+        return 1;
+
+    if (op === '*' || op === '/')
+        return 2;
+
     return 0;
 }
 
@@ -15,13 +20,15 @@ function infixToPostfix(expr) {
             continue;
 
         if (!isNaN(ch) || /[A-Za-z]/.test(ch)) {
+
             postfix += ch;
-        }
 
+        }
         else if (ch === '(') {
-            stack.push(ch);
-        }
 
+            stack.push(ch);
+
+        }
         else if (ch === ')') {
 
             while (stack.length && stack[stack.length - 1] !== '(') {
@@ -30,7 +37,6 @@ function infixToPostfix(expr) {
 
             stack.pop();
         }
-
         else {
 
             while (
@@ -64,7 +70,8 @@ function evaluatePostfix(expr) {
 
             stack.push(Number(ch));
 
-        } else {
+        }
+        else {
 
             let b = stack.pop();
             let a = stack.pop();
@@ -102,16 +109,18 @@ function convertToPostfix() {
 
     const postfix = infixToPostfix(expr);
 
-    // Put the postfix expression into the input box
+    // Display postfix in the input box
     document.getElementById("expression").value = postfix;
 
     document.getElementById("result").innerText =
         "Postfix Expression: " + postfix;
 }
+
 function evaluateOnly() {
-    console.log("Input:",expr);
 
     const expr = document.getElementById("expression").value;
+
+    console.log("Input:", expr);
 
     const result = evaluatePostfix(expr);
 
