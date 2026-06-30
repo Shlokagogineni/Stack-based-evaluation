@@ -6,6 +6,9 @@ function precedence(op) {
     if (op === '*' || op === '/')
         return 2;
 
+    if (op === '^')
+        return 3;
+
     return 0;
 }
 
@@ -41,7 +44,13 @@ function infixToPostfix(expr) {
 
             while (
                 stack.length &&
-                precedence(stack[stack.length - 1]) >= precedence(ch)
+                (
+                    precedence(stack[stack.length - 1]) > precedence(ch) ||
+                    (
+                        precedence(stack[stack.length - 1]) === precedence(ch) &&
+                        ch !== '^'
+                    )
+                )
             ) {
                 postfix += stack.pop();
             }
@@ -94,6 +103,10 @@ function evaluatePostfix(expr) {
                     stack.push(a / b);
                     break;
 
+                case '^':
+                    stack.push(Math.pow(a, b));
+                    break;
+
                 default:
                     return "Invalid Operator";
             }
@@ -109,7 +122,6 @@ function convertToPostfix() {
 
     const postfix = infixToPostfix(expr);
 
-    // Display postfix in the input box
     document.getElementById("expression").value = postfix;
 
     document.getElementById("result").innerText =
@@ -119,8 +131,6 @@ function convertToPostfix() {
 function evaluateOnly() {
 
     const expr = document.getElementById("expression").value;
-
-    console.log("Input:", expr);
 
     const result = evaluatePostfix(expr);
 
